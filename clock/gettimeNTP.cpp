@@ -1,4 +1,4 @@
-#include "gettimeNTP.h"
+#include "gettimeNTP.hpp"
 
 WiFiUDP Udp;
 unsigned int localPort = 8888;  // local port to listen for UDP packets

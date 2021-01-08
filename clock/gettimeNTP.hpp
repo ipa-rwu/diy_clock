@@ -1,8 +1,13 @@
+#ifndef __TIME_FROM_NTP_HPP__
+#define __TIME_FROM_NTP_HPP__
+
 #include <TimeLib.h>
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
 
+const char ssid[] = "";
+const char pass[] = "";
 
 // NTP Servers:
 static const char ntpServerName[] = "de.pool.ntp.org";
@@ -28,3 +33,5 @@ TimeStruct gettime();
 
 void SetupTime();
 void ShowTime();
+
+#endif

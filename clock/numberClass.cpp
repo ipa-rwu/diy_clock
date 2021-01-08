@@ -13,25 +13,19 @@ void NumberClass::setup_led()
 {
   FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, BGR, DATA_RATE_MHZ(12)>(_leds, NUM_LEDS_ALL);
   LEDS.setBrightness(100);
-  fill_solid( &(_leds[0]), NUM_LEDS_ALL /*number of leds*/, CRGB( 255, 0, 0) );
+  fill_solid( &(_leds[0]), NUM_LEDS_ALL /*number of leds*/, CHSV( 255, 0, 0) );
   FastLED.show();
   delay(2000);
 }
 
 void NumberClass::choose_line(int line_num,int num_number, colorHSV color)
 {
-  fill_solid( &(_leds[num_number + line_num*showled_num]), showled_num /*number of leds*/, CRGB(color.h, color.s, color.v) );
+  fill_solid( &(_leds[num_number + line_num*showled_num]), showled_num /*number of leds*/, CHSV(color.h, color.s, color.v) );
 }
 
 
 void NumberClass::blink_dots(int led_num, time_t current_time, colorHSV color)
 {
-  // Serial.print(current_time);
-  // Serial.print("\n");
-  //Serial.print(on_time);
-  //Serial.print("\n");
-  //Serial.print(off_time);
-  //Serial.print("\n");
   if (on_time == 0 && off_time == 0)
   {
     fill_solid( &(_leds[led_num]), NUM_DOTS /*number of leds*/, CHSV(color.h, color.s, color.v));

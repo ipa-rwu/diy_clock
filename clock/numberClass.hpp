@@ -2,6 +2,11 @@
 #define __NUMBERS_HPP__
 
 #include <TimeLib.h>
+
+#define FASTLED_ESP8266_RAW_PIN_ORDER
+#define FASTLED_ESP8266_NODEMCU_PIN_ORDER
+#define FASTLED_ESP8266_D1_PIN_ORDER
+
 #include <FastLED.h>
 
 #define NUM_LEDS 21
