@@ -32,9 +32,9 @@ MQTTClass *mqtt_obj = new MQTTClass(client_name, mqttServer);
 
 void setup() {
   Serial.begin(115200);
-  color_hsv.h = 39;
-  color_hsv.s = 92;
-  color_hsv.v = 100;
+  color_hsv.h = 50;
+  color_hsv.s = 255;
+  color_hsv.v = 255;
   number_obj->setup_led();
 
   mqtt_obj->setup_mqtt();
@@ -78,7 +78,7 @@ void loop()
         Serial.println();
       }
 
-      if ((getValue(mqtt_obj->str_payload, ':', 0)) == "adjuse"){
+      if ((getValue(mqtt_obj->str_payload, ':', 0)) == "adjust"){
         time_diff = half_payload.toInt();
         Serial.print("adjuse time: ");
         Serial.print(time_diff);
@@ -113,8 +113,8 @@ void loop()
       if (now() != (prevDisplay)) 
       { 
         //update the display only if time has changed
-        Serial.print(prevDisplay);
-        Serial.print("\n");
+        //Serial.print(prevDisplay);
+        //Serial.print("\n");
         prevDisplay = now();
         time_split = gettime();
         nowmin = time_split.min_1 * 10 + time_split.min_2;        
@@ -130,6 +130,10 @@ void loop()
           number_obj->fade_number(2+2*21, 21*2);
 
           time_h = time_split.hour_1*10 + time_split.hour_2 + time_diff;
+          if (time_split.hour_1 == 0 && time_split.hour_2 == 0 && time_diff == -1)
+          {
+            time_h = 23;
+          }
           number_obj->show_number(time_h/10,0, color_hsv);
           number_obj->show_number(time_h%10,1*21, color_hsv);
        

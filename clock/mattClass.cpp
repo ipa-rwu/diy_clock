@@ -2,7 +2,7 @@
 
 MQTTClass::MQTTClass(const char* client_name, const char* mqttServer): _client_name(client_name), _mqttServer(mqttServer)
 {
-  _topic_adjuse_time = "/clock/adjuse";
+  _topic_adjuse_time = "/clock/adjust";
   _topic_color = "/clock/color";
   _topic_on_off = "/clock/onoff";
 
