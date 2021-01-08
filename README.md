@@ -1,6 +1,10 @@
 # diy_clock
 ### Magic clock
-![clock](doc/clock.jpg?raw=true "Magic clock")
+
+<p align="center">
+  <img src="doc/clock.jpeg" width="350" title="Magic clock">
+</p>
+
 ### Hardware:
   1. board: NodeMCU 1.0
   2. 3d printed number
