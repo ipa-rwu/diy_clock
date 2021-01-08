@@ -2,10 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-const char ssid[] = "UPC6D53D17";
-//"UPC6D53D17" "wext";
-const char pass[] = "hY6yfwdhwCmt"; 
-//"hY6yfwdhwCmt" "Nuwk3^CejoTexy";
+
 
 // NTP Servers:
 static const char ntpServerName[] = "de.pool.ntp.org";
