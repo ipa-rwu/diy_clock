@@ -3,6 +3,7 @@
 #include <TimeLib.h>
 #include "numberClass.hpp"
 #include "mqttClass.hpp"
+#include "secret.hpp"
 
 #define Test 1
 
@@ -19,52 +20,90 @@ bool flag = 0;
 int time_h = 0;
 
 // MQTT
-const char* mqttServer = "192.168.0.52";
-//"192.168.179.57";
-const char* client_name = "clock_client";
+WiFiClient espClient;
+const char* mqtt_server_ip = "192.168.0.52";
+const int   mqtt_server_port = 1883;
+const char* mqtt_client_name = "clock_client";
+MQTTClass *mqtt_obj = new MQTTClass(espClient);
 String half_payload = "";
-long lastReconnectAttempt = 0;
 int time_diff = 0, flag_on = 0;
+long lastReconnectAttempt_MQTT;
+long lastReconnectAttempt_Wifi;
 
 NumberClass *number_obj = new NumberClass;
 NumberClass::colorHSV color_hsv;
-MQTTClass *mqtt_obj = new MQTTClass(client_name, mqttServer);
 
 void setup() {
   Serial.begin(115200);
+
+  int try_wifi = 0;
+  // connect to wifi
+  WiFi.begin(_ssid, _password);
+  Serial.begin(115200);
+  while (WiFi.status() != WL_CONNECTED && try_wifi <=3) {
+    try_wifi++;
+    delay(1000);
+    Serial.println("Connecting to WiFi..");
+  } 
+  if (WiFi.status() != WL_CONNECTED){
+    Serial.println("Not Connected to the WiFi network");
+  }
+  else{
+    Serial.println("Connected to the WiFi network");
+
+  }
+  
   color_hsv.h = 50;
   color_hsv.s = 255;
   color_hsv.v = 255;
   number_obj->setup_led();
 
-  mqtt_obj->setup_mqtt();
+  mqtt_obj->setup(mqtt_server_ip, mqtt_server_port, mqtt_client_name);
 
   SetupTime();
   
   // setup_led();
   number_obj->fade_all();
 
-  lastReconnectAttempt = 0;
+  lastReconnectAttempt_MQTT = 0;
+  lastReconnectAttempt_Wifi = 0;
  
 }
 
 
 void loop() 
-{   
-  if (!mqtt_obj->clientMQTT->connected()) {
-    long now = millis();
-    if (now - lastReconnectAttempt > 5000) {
-      lastReconnectAttempt = now;
-      // Attempt to reconnect
-      Serial.print("reconnet to mqtt");
-      Serial.println();
-      if (mqtt_obj->reconnect()) {
-        lastReconnectAttempt = 0;
+{ 
+  long now_now = millis();
+  // reconnect to wifi
+  if ((WiFi.status() != WL_CONNECTED))
+  {
+    if ((now_now - lastReconnectAttempt_Wifi) > 5000)
+    {
+      lastReconnectAttempt_Wifi = now_now;
+      WiFi.begin(_ssid, _password);
+      if ((WiFi.status() == WL_CONNECTED))
+      {
+        lastReconnectAttempt_Wifi = 0;
       }
     }
   }
 
-  else{
+  // reconnect to mqtt
+  if ((WiFi.status() == WL_CONNECTED))
+  {
+    if (!mqtt_obj->connected()) {
+      if ((now_now - lastReconnectAttempt_MQTT) > 5000) {
+        lastReconnectAttempt_MQTT = now_now;
+        // Attempt to reconnect
+        Serial.println("reconnet to mqtt");
+        if (mqtt_obj->reconnect()) {
+          lastReconnectAttempt_MQTT = 0;
+        }
+      }
+    }
+  }
+  
+  if(mqtt_obj->connected()){
     Serial.print(mqtt_obj->str_payload);
     if (mqtt_obj->str_payload != "")
     {
@@ -168,7 +207,7 @@ void loop()
         //Serial.println();
       }
     }
-    mqtt_obj->clientMQTT->loop();
+    mqtt_obj->loop();
 }
 
 
